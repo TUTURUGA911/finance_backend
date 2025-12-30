@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Facades\Sqids;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,7 +16,7 @@ class IncomeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => Sqids::encode($this->id),
             'date' => $this->date,
             'source' => $this->source,
             'amount' => $this->amount,

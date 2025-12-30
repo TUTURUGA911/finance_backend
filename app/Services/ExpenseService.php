@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Facades\Sqids;
 use App\Models\Expense;
 use App\Repositories\ExpenseRepository;
+use Illuminate\Support\Facades\Auth;
 
 class ExpenseService
 {
@@ -18,16 +20,29 @@ class ExpenseService
 
     public function create(array $data): Expense
     {
+        $data['user_id'] = Auth::id();
         return $this->expenseRepository->create($data);
     }
 
-    public function update(Expense $expense, array $data): Expense
+    public function update(string $encodedId, array $data): Expense
     {
-        return $this->expenseRepository->update($expense, $data);
+        $id = Sqids::decode($encodedId);
+        return $this->expenseRepository->update($id, $data);
     }
 
-    public function delete(Expense $expense): void
+    public function findById(int $id): Expense
     {
-        $this->expenseRepository->delete($expense);
+        return $this->expenseRepository->find($id);
+    }
+
+    public function deleteById(int $id): void
+    {
+        $this->expenseRepository->delete($id);
+    }
+
+    public function delete(string $encodedId): void
+    {
+        $id = Sqids::decode($encodedId);
+        $this->expenseRepository->delete($id);
     }
 }

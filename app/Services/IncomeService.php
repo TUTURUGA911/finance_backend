@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Facades\Sqids;
 use App\Models\Income;
 use App\Repositories\IncomeRepository;
+use Illuminate\Support\Facades\Auth;
 
 class IncomeService
 {
@@ -18,16 +20,33 @@ class IncomeService
 
     public function create(array $data): Income
     {
+        $data['user_id'] = Auth::id();
         return $this->incomeRepository->create($data);
     }
 
-    public function update(Income $income, array $data): Income
+
+    public function update(string $encodedId, array $data): Income
     {
-        return $this->incomeRepository->update($income, $data);
+        $id = Sqids::decode($encodedId);
+
+        return $this->incomeRepository->update($id, $data);
     }
 
-    public function delete(Income $income): void
+    public function findById(int $id): Income
     {
-        $this->incomeRepository->delete($income);
+        return $this->incomeRepository->find($id);
+    }
+
+    public function deleteById(int $id): void
+    {
+        $this->incomeRepository->delete($id);
+    }
+
+
+    public function delete(string $encodedId): void
+    {
+        $id = Sqids::decode($encodedId);
+
+        $this->incomeRepository->delete($id);
     }
 }
