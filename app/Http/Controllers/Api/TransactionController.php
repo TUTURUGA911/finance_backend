@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Facades\Sqids;
 use App\Http\Controllers\Controller;
 use App\Models\Income;
 use App\Models\Expense;
@@ -11,31 +12,28 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil incomes user
         $incomes = Income::where('user_id', $request->user()->id)->get()->map(function ($item) {
             return [
-                'id' => $item->id,
+                'id' => Sqids::encode($item->id), // <-- encode id
                 'date' => $item->date,
-                'category' => $item->source, // normalize
+                'category' => $item->category,
                 'amount' => $item->amount,
                 'description' => $item->description,
                 'type' => 'income'
             ];
         });
 
-        // Ambil expenses user
         $expenses = Expense::where('user_id', $request->user()->id)->get()->map(function ($item) {
             return [
-                'id' => $item->id,
+                'id' => Sqids::encode($item->id), // <-- encode id
                 'date' => $item->date,
-                'category' => $item->category, // sudah category
+                'category' => $item->category,
                 'amount' => $item->amount,
                 'description' => $item->description,
                 'type' => 'expense'
             ];
         });
 
-        // Gabungkan & sort berdasarkan date desc
         $transactions = $incomes->merge($expenses)->sortByDesc('date')->values();
 
         return response()->json([

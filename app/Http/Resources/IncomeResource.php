@@ -18,7 +18,7 @@ class IncomeResource extends JsonResource
         return [
             'id' => Sqids::encode($this->id),
             'date' => $this->date,
-            'source' => $this->source,
+            'category' => $this->category,
             'amount' => $this->amount,
             'description' => $this->description,
             'created_at' => $this->created_at,

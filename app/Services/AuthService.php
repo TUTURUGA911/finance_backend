@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
@@ -16,14 +17,29 @@ class AuthService
         ]);
     }
 
-    public function login(array $data): string
+    public function login(array $data): array
     {
-        $user = User::where('email', $data['email'])->first();
+        // login via email
+        if (isset($data['email'])) {
+            $user = User::where('email', $data['email'])->first();
+        }
 
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
+        // login via decoded user_id
+        if (isset($data['user_id'])) {
+            $user = User::find($data['user_id']);
+        }
+
+        if (!isset($user) || ! $user->password || ! Hash::check($data['password'], $user->password)) {
             throw new \Exception('Invalid credentials');
         }
 
-        return $user->createToken('api-token')->plainTextToken;
+        // authenticate user for current request (optional)
+        Auth::login($user);
+
+        // return both user & token
+        return [
+            'user' => $user,
+            'token' => $user->createToken('api-token')->plainTextToken,
+        ];
     }
 }

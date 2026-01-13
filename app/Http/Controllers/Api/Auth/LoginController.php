@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\AuthService;
+use App\Services\SqidsService;
 
 class LoginController extends Controller
 {
@@ -12,15 +13,18 @@ class LoginController extends Controller
         protected AuthService $authService
     ) {}
 
-    public function __invoke(LoginRequest $request)
+    public function __invoke(LoginRequest $request, SqidsService $sqids)
     {
-        $token = $this->authService->login($request->validated());
+        $result = $this->authService->login($request->validated());
+
+        $encodedUser = $sqids->rec_encode_ids_in_list($result['user']);
 
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'token' => $token,
+                'user' => $encodedUser,
+                'token' => $result['token'],
                 'token_type' => 'Bearer',
             ],
         ]);
