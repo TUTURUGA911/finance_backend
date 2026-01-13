@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\IncomeController;
+use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/expenses', [ExpenseController::class, 'store']);
     Route::put('/expenses/{id}', [ExpenseController::class, 'update']);
     Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy']);
+
+    Route::get('/transactions', [TransactionController::class, 'index']);
 
     Route::post('/logout', [LogoutController::class, 'logout']);
 });

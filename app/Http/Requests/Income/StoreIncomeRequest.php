@@ -23,7 +23,7 @@ class StoreIncomeRequest extends FormRequest
     {
         return [
             'date' => 'required|date',
-            'source' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
             'description' => 'nullable|string',
         ];
