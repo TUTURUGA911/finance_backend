@@ -6,25 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('incomes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('date');
-            $table->string('category');
-            $table->decimal('amount', 15, 2);
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->date('date')->index();
+            $table->string('category')->index();
+            $table->decimal('amount', 15, 2)->index();
             $table->string('description')->nullable();
             $table->timestamps();
+
+            $table->index(['user_id', 'date']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('incomes');

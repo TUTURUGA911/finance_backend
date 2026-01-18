@@ -4,19 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Income extends Model
+class UserStreak extends Model
 {
+    protected $table = 'user_streaks';
+
     protected $fillable = [
         'user_id',
-        'date',
-        'category',
-        'amount',
-        'description',
+        'streak',
+        'last_date',
     ];
 
     protected $casts = [
-        'date' => 'date',
-        'amount' => 'decimal:2',
+        'streak' => 'integer',
+        'last_date' => 'date',
     ];
 
     public function user()

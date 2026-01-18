@@ -8,24 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('user_streaks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
+                ->unique()
                 ->constrained()
                 ->onDelete('cascade');
 
-            $table->date('date')->index();
-            $table->string('category')->index();
-            $table->decimal('amount', 15, 2)->index();
-            $table->string('description')->nullable();
+            $table->unsignedInteger('streak')->default(0);
+            $table->date('last_date')->nullable()->index();
             $table->timestamps();
-
-            $table->index(['user_id', 'date']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('user_streaks');
     }
 };
